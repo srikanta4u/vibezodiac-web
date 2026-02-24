@@ -8,7 +8,7 @@ export function Navigation() {
 
   return (
     <nav style={{
-      background: 'rgba(255, 255, 255, 0.1)',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       backdropFilter: 'blur(10px)',
       borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
       position: 'sticky',
