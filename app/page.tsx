@@ -1,7 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { ZodiacWheel } from '@/components/ZodiacWheel'
 import { Navigation } from '@/components/Navigation'
-import { Newsletter } from '@/components/Newsletter'
 import { Footer } from '@/components/Footer'
 import type { HoroscopeWithSign } from '@/lib/types'
 
@@ -99,7 +98,6 @@ export default async function HomePage() {
         </div>
       </main>
 
-      <Newsletter />
       <Footer />
     </div>
   )

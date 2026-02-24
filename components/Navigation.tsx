@@ -40,6 +40,7 @@ export function Navigation() {
           <Link href="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link>
           <Link href="/about" style={{ color: 'white', textDecoration: 'none' }}>About</Link>
           <Link href="/contact" style={{ color: 'white', textDecoration: 'none' }}>Contact</Link>
+          <Link href="/subscribe" style={{ color: 'white', textDecoration: 'none' }}>Subscribe</Link>
         </div>
       </div>
     </nav>
