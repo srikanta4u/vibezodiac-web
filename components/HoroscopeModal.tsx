@@ -17,7 +17,6 @@ export function HoroscopeModal({ horoscope, onClose }: HoroscopeModalProps) {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [onClose])
 
-  const date = new Date(horoscope.horoscope_date)
 
   return (
     <div className="modal active" onClick={onClose}>
@@ -27,14 +26,7 @@ export function HoroscopeModal({ horoscope, onClose }: HoroscopeModalProps) {
         <div className="modal-header">
           <div className="modal-symbol">{horoscope.zodiac_signs.symbol}</div>
           <h2 className="modal-title">{horoscope.zodiac_signs.name}</h2>
-          <p className="modal-date">
-            {date.toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </p>
+          
         </div>
 
         <div className="horoscope-section">
