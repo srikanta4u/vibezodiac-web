@@ -8,7 +8,7 @@ import type { HoroscopeWithSign } from '@/lib/types'
 export const revalidate = 3600
 
 async function getHoroscopes() {
-  const today = new Date().toISOString().split('T')[0]
+const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
   
   const { data, error } = await supabase
     .from('daily_horoscopes')
