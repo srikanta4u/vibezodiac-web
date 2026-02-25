@@ -356,7 +356,7 @@ export default function JoinAsAstrologer() {
                   {step > s.num ? '✓' : s.icon}
                 </div>
                 <span style={{ fontSize:'0.65rem', color: step >= s.num ? 'rgba(255,215,0,0.7)' : 'rgba(255,255,255,0.25)',
-                  letterSpacing:'0.5px', display: window?.innerWidth < 500 ? 'none' : 'block' }}>
+                  letterSpacing:'0.5px' }}>
                   {s.label}
                 </span>
               </div>
