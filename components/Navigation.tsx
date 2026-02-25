@@ -42,6 +42,7 @@ export function Navigation() {
           <Link href="/contact" style={{ color: 'white', textDecoration: 'none' }}>Contact</Link>
           <Link href="/subscribe" style={{ color: 'white', textDecoration: 'none' }}>Subscribe</Link>
           <Link href="/kundli" style={{ color: '#FFD700', textDecoration: 'none', fontWeight: 'bold' }}>☸ Free Kundli</Link>
+          <Link href="/kundli-matching" style={{ color: '#FFD700', textDecoration: 'none', fontWeight: 'bold' }}>💑 Kundli Match</Link>
         </div>
       </div>
     </nav>
