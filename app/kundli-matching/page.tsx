@@ -521,6 +521,57 @@ interface FormData {
 
 const emptyForm: FormData = { name: '', date: '', time: '12:00 AM', place: '' }
 
+// ⚠️ IMPORTANT: FormPanel must be defined OUTSIDE the main component
+// to prevent React from remounting it on every keystroke (causing focus loss)
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  background: 'rgba(255,255,255,0.08)',
+  border: '1px solid rgba(255,215,0,0.25)',
+  borderRadius: '10px',
+  padding: '0.75rem 1rem',
+  color: 'white',
+  fontSize: '0.95rem',
+  outline: 'none',
+  boxSizing: 'border-box',
+}
+const labelStyle: React.CSSProperties = {
+  display: 'block',
+  color: 'rgba(255,215,0,0.8)',
+  marginBottom: '0.4rem',
+  fontSize: '0.85rem',
+  letterSpacing: '0.5px',
+}
+
+function FormPanel({ data, setData, label }: { data: FormData, setData: (d: FormData) => void, label: string }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <h3 style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', letterSpacing: '3px', margin: 0 }}>
+        {label} DETAIL
+      </h3>
+      <div>
+        <label style={labelStyle}>Name *</label>
+        <input style={inputStyle} placeholder="Enter name" value={data.name}
+          onChange={e => setData({ ...data, name: e.target.value })} />
+      </div>
+      <div>
+        <label style={labelStyle}>Date of Birth * (MM/DD/YYYY)</label>
+        <input style={inputStyle} placeholder="MM/DD/YYYY" value={data.date}
+          onChange={e => setData({ ...data, date: e.target.value })} />
+      </div>
+      <div>
+        <label style={labelStyle}>Time of Birth</label>
+        <input style={inputStyle} placeholder="12:00 AM" value={data.time}
+          onChange={e => setData({ ...data, time: e.target.value })} />
+      </div>
+      <div>
+        <label style={labelStyle}>Birth Place *</label>
+        <input style={inputStyle} placeholder="City, Country" value={data.place}
+          onChange={e => setData({ ...data, place: e.target.value })} />
+      </div>
+    </div>
+  )
+}
+
 export default function KundliMatchingPage() {
   const [boy, setBoy] = useState<FormData>({ ...emptyForm })
   const [girl, setGirl] = useState<FormData>({ ...emptyForm })
@@ -548,53 +599,6 @@ export default function KundliMatchingPage() {
       setLoading(false)
     }, 1000)
   }
-
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    background: 'rgba(255,255,255,0.08)',
-    border: '1px solid rgba(255,215,0,0.25)',
-    borderRadius: '10px',
-    padding: '0.75rem 1rem',
-    color: 'white',
-    fontSize: '0.95rem',
-    outline: 'none',
-    boxSizing: 'border-box',
-  }
-  const labelStyle: React.CSSProperties = {
-    display: 'block',
-    color: 'rgba(255,215,0,0.8)',
-    marginBottom: '0.4rem',
-    fontSize: '0.85rem',
-    letterSpacing: '0.5px',
-  }
-
-  const FormPanel = ({ data, setData, label }: { data: FormData, setData: (d: FormData) => void, label: string }) => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <h3 style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', letterSpacing: '3px', margin: 0 }}>
-        {label} DETAIL
-      </h3>
-      <div>
-        <label style={labelStyle}>Name *</label>
-        <input style={inputStyle} placeholder="Enter name" value={data.name}
-          onChange={e => setData({ ...data, name: e.target.value })} />
-      </div>
-      <div>
-        <label style={labelStyle}>Date of Birth * (MM/DD/YYYY)</label>
-        <input style={inputStyle} placeholder="MM/DD/YYYY" value={data.date}
-          onChange={e => setData({ ...data, date: e.target.value })} />
-      </div>
-      <div>
-        <label style={labelStyle}>Time of Birth</label>
-        <input style={inputStyle} placeholder="12:00 AM" value={data.time}
-          onChange={e => setData({ ...data, time: e.target.value })} />
-      </div>
-      <div>
-        <label style={labelStyle}>Birth Place *</label>
-        <input style={inputStyle} placeholder="City, Country" value={data.place}
-          onChange={e => setData({ ...data, place: e.target.value })} />
-      </div>
-    </div>
-  )
 
   return (
     <div style={{
