@@ -41,6 +41,7 @@ export function Navigation() {
           <Link href="/about" style={{ color: 'white', textDecoration: 'none' }}>About</Link>
           <Link href="/contact" style={{ color: 'white', textDecoration: 'none' }}>Contact</Link>
           <Link href="/subscribe" style={{ color: 'white', textDecoration: 'none' }}>Subscribe</Link>
+          <Link href="/compatibility" style={{ color: 'white', textDecoration: 'none' }}>💞 Compatibility</Link>
           <Link href="/kundli" style={{ color: '#FFD700', textDecoration: 'none', fontWeight: 'bold' }}>☸ Free Kundli</Link>
           <Link href="/kundli-matching" style={{ color: '#FFD700', textDecoration: 'none', fontWeight: 'bold' }}>💑 Kundli Match</Link>
         </div>
