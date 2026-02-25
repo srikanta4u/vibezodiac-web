@@ -204,24 +204,24 @@ export default function JoinAsAstrologer() {
     setError('')
     if (step === 1) {
       if (!form.full_name || !form.email || !form.phone || !form.gender || !form.experience_years || !form.bio)
-        return setError('Please fill all required fields.') || false
+        setError('Please fill all required fields.'); return false
       if (!/\S+@\S+\.\S+/.test(form.email))
-        return setError('Please enter a valid email.') || false
+        setError('Please enter a valid email.'); return false
     }
     if (step === 2) {
       if (!form.state || !form.city)
-        return setError('State and city are required.') || false
+        setError('State and city are required.'); return false
       if (form.is_temple_affiliated && !form.temple_name)
-        return setError('Please enter your temple name.') || false
+        setError('Please enter your temple name.'); return false
     }
     if (step === 3 && form.astrology_types.length === 0)
-      return setError('Select at least one astrology type.') || false
+      setError('Select at least one astrology type.'); return false
     if (step === 4 && (form.services_offered.length === 0 || form.service_modes.length === 0))
-      return setError('Select at least one service and one service mode.') || false
+      setError('Select at least one service and one service mode.'); return false
     if (step === 5 && form.languages.length === 0)
-      return setError('Select at least one language.') || false
+      setError('Select at least one language.'); return false
     if (step === 6 && !form.profile_photo_url)
-      return setError('Profile photo is required.') || false
+      setError('Profile photo is required.'); return false
     return true
   }
 
