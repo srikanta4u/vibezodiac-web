@@ -2,13 +2,12 @@ import { supabase } from '@/lib/supabase'
 import { ZodiacWheel } from '@/components/ZodiacWheel'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
-import { AstrologerBanner, AstrologerSection } from '@/components/AstrologerCTA'
 import type { HoroscopeWithSign } from '@/lib/types'
 
 export const revalidate = 3600
 
 async function getHoroscopes() {
-  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
   
   const { data, error } = await supabase
     .from('daily_horoscopes')
@@ -65,7 +64,7 @@ export default async function HomePage() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '4rem 2rem 3rem'
+        padding: '4rem 2rem'
       }}>
         <div style={{ textAlign: 'center', maxWidth: '1200px', width: '100%' }}>
           <h1 style={{
@@ -96,14 +95,8 @@ export default async function HomePage() {
               No horoscopes available for today. Please generate them first.
             </div>
           )}
-
-          {/* ── Astrologer Banner — slides in below the zodiac wheel ── */}
-          <AstrologerBanner />
         </div>
       </main>
-
-      {/* ── Astrologer Full Section — above footer ── */}
-      <AstrologerSection />
 
       <Footer />
     </div>
