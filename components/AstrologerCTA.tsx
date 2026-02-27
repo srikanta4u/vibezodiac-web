@@ -60,7 +60,7 @@ export function AstrologerBanner() {
               Are you a Vedic Priest or Astrologer?
             </div>
             <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', lineHeight: 1.4 }}>
-              Join VibeZodiac — connect with seekers across the USA • Free to register
+              Join VibeZodiac — connect with seekers across the USA, Canada, India, Australia and UK • Free to register
             </div>
           </div>
         </div>
@@ -177,7 +177,7 @@ export function AstrologerSection() {
               fontWeight: 'normal',
             }}>
               Share Your Wisdom.<br />
-              <span style={{ color: '#FFD700' }}>Reach Seekers Across the USA.</span>
+              <span style={{ color: '#FFD700' }}>Reach Seekers Across the USA, Canada, India, Australia and UK.</span>
             </h2>
 
             <p style={{
