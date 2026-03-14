@@ -39,7 +39,7 @@ export default function ChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
       })
-      const { reply, remaining: rem, rateLimited } = await res.json()
+      const { reply, remaining: rem } = await res.json()
       if (rem !== undefined) setRemaining(rem)
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -62,21 +62,35 @@ export default function ChatWidget() {
         onClick={() => setOpen(!open)}
         style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 9999,
-          width: 56, height: 56, borderRadius: '50%',
+          height: 56, borderRadius: 28,
+          padding: '0 20px',
           background: 'linear-gradient(135deg, #6B4EFF, #9B59B6)',
-          border: 'none', cursor: 'pointer', fontSize: 22,
-          boxShadow: '0 4px 20px rgba(107,78,255,0.5)',
+          border: 'none', cursor: 'pointer',
+          boxShadow: '0 4px 24px rgba(107,78,255,0.6)',
           color: '#fff', display: 'flex', alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center', gap: 8
         }}
       >
-        {open ? '✕' : '✨'}
+        {open ? (
+          <>
+            <span style={{ fontSize: 16 }}>✕</span>
+            <span style={{ fontSize: 13, fontWeight: 500 }}>Close</span>
+          </>
+        ) : (
+          <>
+            <span style={{ fontSize: 18 }}>✨</span>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1.2 }}>
+              <span style={{ fontSize: 13, fontWeight: 600 }}>Veda</span>
+              <span style={{ fontSize: 9, opacity: 0.85, letterSpacing: '0.08em', fontWeight: 400 }}>AI CHATBOT</span>
+            </div>
+          </>
+        )}
       </button>
 
       {/* Chat window */}
       {open && (
         <div style={{
-          position: 'fixed', bottom: 90, right: 24, zIndex: 9998,
+          position: 'fixed', bottom: 92, right: 24, zIndex: 9998,
           width: 340, height: 500, borderRadius: 16,
           background: '#1a1035',
           border: '1px solid rgba(107,78,255,0.3)',
@@ -86,13 +100,23 @@ export default function ChatWidget() {
 
           {/* Header */}
           <div style={{
-            padding: '14px 16px',
+            padding: '12px 16px',
             background: 'linear-gradient(135deg, #6B4EFF, #9B59B6)',
-            color: '#fff', fontWeight: 500, fontSize: 14,
-            display: 'flex', alignItems: 'center', gap: 8
+            color: '#fff', fontWeight: 500,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between'
           }}>
-            <span style={{ fontSize: 18 }}>✨</span>
-            Veda — VibeZodiac Guide
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 18 }}>✨</span>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600 }}>Veda — VibeZodiac Guide</div>
+                <div style={{ fontSize: 10, opacity: 0.8, letterSpacing: '0.05em' }}>AI CHATBOT • Powered by VibeZodiac</div>
+              </div>
+            </div>
+            <div style={{
+              width: 8, height: 8, borderRadius: '50%',
+              background: '#4eff91',
+              boxShadow: '0 0 6px #4eff91'
+            }} />
           </div>
 
           {/* Messages */}
@@ -114,6 +138,14 @@ export default function ChatWidget() {
                 color: '#fff',
                 fontSize: 13, lineHeight: 1.6
               }}>
+                {m.role === 'assistant' && (
+                  <div style={{
+                    fontSize: 10, opacity: 0.6, marginBottom: 4,
+                    letterSpacing: '0.05em'
+                  }}>
+                    VEDA AI
+                  </div>
+                )}
                 {m.content}
               </div>
             ))}
@@ -127,13 +159,14 @@ export default function ChatWidget() {
                 color: 'rgba(255,255,255,0.6)',
                 fontSize: 13
               }}>
+                <div style={{ fontSize: 10, opacity: 0.6, marginBottom: 4, letterSpacing: '0.05em' }}>VEDA AI</div>
                 🔮 Reading the cosmos...
               </div>
             )}
             <div ref={bottomRef} />
           </div>
 
-          {/* Suggested questions — show only at start */}
+          {/* Suggested questions */}
           {messages.length === 1 && !loading && (
             <div style={{
               padding: '0 12px 8px',
@@ -200,6 +233,17 @@ export default function ChatWidget() {
             >
               Send
             </button>
+          </div>
+
+          {/* Footer */}
+          <div style={{
+            padding: '6px 12px',
+            borderTop: '1px solid rgba(255,255,255,0.06)',
+            textAlign: 'center',
+            fontSize: 10,
+            color: 'rgba(255,255,255,0.3)'
+          }}>
+            Powered by VibeZodiac AI • Answers from VibeZodiac content only
           </div>
         </div>
       )}
