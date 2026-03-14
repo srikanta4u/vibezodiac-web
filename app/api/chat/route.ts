@@ -196,10 +196,18 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  const reply = await generateAnswer(context, message)
+const rawReply = await generateAnswer(context, message)
+
+  // Strip markdown symbols so they don't show in chat UI
+  const reply = rawReply
+    .replace(/^#+\s*/gm, '')      // remove # headings
+    .replace(/\*\*(.*?)\*\*/g, '$1')  // remove **bold**
+    .replace(/\*(.*?)\*/g, '$1')      // remove *italic*
+    .trim()
 
   responseCache.set(cacheKey, { reply, ts: Date.now() })
-
+  
+  
   const sessionId = body?.sessionId
   if (sessionId) {
     saveChatHistory(sessionId, message, reply).catch(() => {})
