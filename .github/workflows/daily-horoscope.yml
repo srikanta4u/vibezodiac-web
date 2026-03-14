@@ -1,0 +1,17 @@
+name: Daily Horoscope Generator
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Edge Function
+        run: |
+          curl -X POST \
+            "https://ywovuuomfblorpdwbyks.supabase.co/functions/v1/generate-daily-horoscopes" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json"
