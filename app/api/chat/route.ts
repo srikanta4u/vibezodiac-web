@@ -91,15 +91,20 @@ async function retrieveContext(embedding: number[]): Promise<string> {
     .join('\n---\n')
 }
 
+  
 async function generateAnswer(context: string, question: string): Promise<string> {
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
   const systemPrompt = `You are Veda, VibeZodiac's astrology guide.
+Today's date is ${today}.
 RULES:
 - Answer ONLY from the context provided. Never use outside knowledge.
+- You already know today's date is ${today} — never ask the user for the date.
 - If context is empty say: "I don't have VibeZodiac content on that yet. Check vibezodiac.com! ✨"
 - Only discuss astrology, zodiac signs, horoscopes, VibeZodiac features.
 - Decline unrelated questions warmly.
 - Keep answers to 2-3 sentences. Be warm and mystical.`
 
+  
   const userMessage = context
     ? `VibeZodiac content:\n${context}\n\nQuestion: ${question}`
     : `Question: ${question}`
