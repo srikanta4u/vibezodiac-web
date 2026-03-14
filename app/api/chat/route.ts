@@ -32,10 +32,7 @@ function isAstrologyQuestion(query: string): boolean {
   return ASTROLOGY_KEYWORDS.some(keyword => lower.includes(keyword))
 }
 
-async function checkRateLimit(ip: string): Promise<{
-  allowed: boolean
-  remaining: number
-}> {
+async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining: number }> {
   const ipHash = crypto.createHash('sha256').update(ip).digest('hex')
   const today = new Date().toISOString().split('T')[0]
 
@@ -94,17 +91,14 @@ async function retrieveContext(embedding: number[]): Promise<string> {
     .join('\n---\n')
 }
 
-async function generateAnswer(
-  context: string,
-  question: string
-): Promise<string> {
+async function generateAnswer(context: string, question: string): Promise<string> {
   const systemPrompt = `You are Veda, VibeZodiac's astrology guide.
 RULES:
 - Answer ONLY from the context provided. Never use outside knowledge.
-- If context is empty or irrelevant say: "I don't have VibeZodiac content on that yet. Check vibezodiac.com for your daily horoscope! ✨"
+- If context is empty say: "I don't have VibeZodiac content on that yet. Check vibezodiac.com! ✨"
 - Only discuss astrology, zodiac signs, horoscopes, VibeZodiac features.
 - Decline unrelated questions warmly.
-- Keep answers to 2-3 sentences max. Be warm and mystical.`
+- Keep answers to 2-3 sentences. Be warm and mystical.`
 
   const userMessage = context
     ? `VibeZodiac content:\n${context}\n\nQuestion: ${question}`
@@ -129,16 +123,23 @@ RULES:
   return data.content?.[0]?.text ?? "The cosmos is quiet right now. Please try again! 🌙"
 }
 
-export async function POST(req: NextRequest) {
+async function saveChatHistory(sessionId: string, message: string, reply: string): Promise<void> {
+  await supabase.from('chat_messages').insert([
+    { session_id: sessionId, role: 'user', content: message },
+    { session_id: sessionId, role: 'assistant', content: reply }
+  ])
+}
 
+export async function POST(req: NextRequest) {
   const forwarded = req.headers.get('x-forwarded-for')
   const realIp = req.headers.get('x-real-ip')
   const ip = (forwarded?.split(',')[0] ?? realIp ?? 'unknown').trim()
 
   const { allowed, remaining } = await checkRateLimit(ip)
+
   if (!allowed) {
     return Response.json({
-      reply: "🌙 You've used your 10 free cosmic readings for today! Come back tomorrow for more guidance from the stars. ✨",
+      reply: "🌙 You've used your 10 free cosmic readings for today! Come back tomorrow. ✨",
       rateLimited: true,
       remaining: 0
     }, { status: 429 })
@@ -156,13 +157,11 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: 'Empty message' }, { status: 400 })
   }
 
-  const message = raw
-    .slice(0, MAX_INPUT_LENGTH)
-    .replace(/<[^>]*>/g, '')
+  const message = raw.slice(0, MAX_INPUT_LENGTH).replace(/<[^>]*>/g, '')
 
   if (!isAstrologyQuestion(message)) {
     return Response.json({
-      reply: "I'm Veda, your cosmic guide! ✨ I specialize in astrology, zodiac signs, and horoscopes. Ask me about your sign, compatibility, or today's horoscope!",
+      reply: "I'm Veda, your cosmic guide! ✨ I specialize in astrology and horoscopes. Ask me about your zodiac sign, compatibility, or today's horoscope!",
       remaining
     })
   }
@@ -178,7 +177,7 @@ export async function POST(req: NextRequest) {
     embedding = await embedQuery(message)
   } catch {
     return Response.json({
-      reply: "The stars are misaligned right now. Please try again in a moment! 🌙",
+      reply: "The stars are misaligned right now. Please try again! 🌙",
       remaining
     })
   }
@@ -187,7 +186,7 @@ export async function POST(req: NextRequest) {
 
   if (!context) {
     return Response.json({
-      reply: "I don't have VibeZodiac content on that topic yet. Visit vibezodiac.com for your full daily horoscope, Kundli, and compatibility readings! ✨",
+      reply: "I don't have VibeZodiac content on that topic yet. Visit vibezodiac.com for your daily horoscope, Kundli, and compatibility! ✨",
       remaining
     })
   }
@@ -198,10 +197,7 @@ export async function POST(req: NextRequest) {
 
   const sessionId = body?.sessionId
   if (sessionId) {
-    await supabase.from('chat_messages').insert([
-      { session_id: sessionId, role: 'user', content: message },
-      { session_id: sessionId, role: 'assistant', content: reply }
-    ]).catch(() => {})
+    saveChatHistory(sessionId, message, reply).catch(() => {})
   }
 
   return Response.json({ reply, remaining })
