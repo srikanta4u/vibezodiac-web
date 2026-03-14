@@ -10,8 +10,8 @@ const supabase = createClient(
 const MAX_MESSAGES_PER_DAY = 10
 const CACHE_TTL_MS = 1000 * 60 * 60
 const MAX_INPUT_LENGTH = 300
-const MAX_CHUNKS = 3
-const MATCH_THRESHOLD = 0.72
+const MAX_CHUNKS = 5
+const MATCH_THRESHOLD = 0.50
 
 const responseCache = new Map<string, { reply: string; ts: number }>()
 
