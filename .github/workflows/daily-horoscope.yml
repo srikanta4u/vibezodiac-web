@@ -9,9 +9,55 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Edge Function
+      - name: Trigger Horoscope Edge Function
         run: |
-          curl -X POST \
+          HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" -X POST \
             "https://ywovuuomfblorpdwbyks.supabase.co/functions/v1/generate-daily-horoscopes" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
-            -H "Content-Type: application/json"
+            -H "Content-Type: application/json" \
+            -d '{"source":"github-actions"}')
+          echo "HTTP Status: $HTTP_STATUS"
+          echo "Response: $(cat response.txt)"
+
+      - name: Wait for horoscopes to be saved
+        run: sleep 30
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install @supabase/supabase-js
+
+      - name: Embed today's horoscopes into vector DB
+        env:
+          SUPABASE_URL: https://ywovuuomfblorpdwbyks.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/ingest.mjs
+```
+
+Then add `OPENAI_API_KEY` to your GitHub secrets:
+- Go to GitHub repo → **Settings → Secrets → Actions → New secret**
+- Name: `OPENAI_API_KEY`
+- Value: your OpenAI key
+
+---
+
+## Complete System Summary 🚀
+
+Every day at 7 AM UTC automatically:
+```
+GitHub Actions runs
+    ↓
+Generates 12 horoscopes via Supabase edge function
+    ↓
+Waits 30 seconds
+    ↓
+Embeds new horoscopes into vector DB
+    ↓
+Chatbot can answer questions about today's horoscopes ✅
