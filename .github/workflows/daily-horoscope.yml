@@ -28,10 +28,12 @@ jobs:
         run: npm install @supabase/supabase-js
 
       - name: Generate daily horoscopes
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" -X POST \
             "https://ywovuuomfblorpdwbyks.supabase.co/functions/v1/generate-daily-horoscopes" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
             -H "Content-Type: application/json" \
             -d '{"source":"github-actions"}')
           echo "Horoscope status: $HTTP_STATUS"
