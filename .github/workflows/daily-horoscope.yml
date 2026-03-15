@@ -1,63 +1,56 @@
-name: Daily Horoscope Generator
+name: Daily Horoscope + Newsletter
 
 on:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 11 * * *'
   workflow_dispatch:
 
 jobs:
-  generate:
+  generate-and-send:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
+
     steps:
-      - name: Trigger Horoscope Edge Function
-        run: |
-          HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" -X POST \
-            "https://ywovuuomfblorpdwbyks.supabase.co/functions/v1/generate-daily-horoscopes" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{"source":"github-actions"}')
-          echo "HTTP Status: $HTTP_STATUS"
-          echo "Response: $(cat response.txt)"
-
-      - name: Wait for horoscopes to be saved
-        run: sleep 30
-
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Install Node dependencies
         run: npm install @supabase/supabase-js
 
-      - name: Embed today's horoscopes into vector DB
+      - name: Generate daily horoscopes
+        run: |
+          HTTP_STATUS=$(curl -s -o response.txt -w "%{http_code}" -X POST \
+            "https://ywovuuomfblorpdwbyks.supabase.co/functions/v1/generate-daily-horoscopes" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"source":"github-actions"}')
+          echo "Horoscope status: $HTTP_STATUS"
+          cat response.txt
+
+      - name: Wait for horoscopes to save
+        run: sleep 45
+
+      - name: Embed horoscopes into vector DB
         env:
-          SUPABASE_URL: https://ywovuuomfblorpdwbyks.supabase.co
+          NEXT_PUBLIC_SUPABASE_URL: https://ywovuuomfblorpdwbyks.supabase.co
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node scripts/ingest.mjs
-```
 
-Then add `OPENAI_API_KEY` to your GitHub secrets:
-- Go to GitHub repo → **Settings → Secrets → Actions → New secret**
-- Name: `OPENAI_API_KEY`
-- Value: your OpenAI key
-
----
-
-## Complete System Summary 🚀
-
-Every day at 7 AM UTC automatically:
-```
-GitHub Actions runs
-    ↓
-Generates 12 horoscopes via Supabase edge function
-    ↓
-Waits 30 seconds
-    ↓
-Embeds new horoscopes into vector DB
-    ↓
-Chatbot can answer questions about today's horoscopes ✅
+      - name: Send daily newsletter
+        env:
+          ZOHO_EMAIL: ${{ secrets.ZOHO_EMAIL }}
+          ZOHO_PASSWORD: ${{ secrets.ZOHO_PASSWORD }}
+          SUPABASE_URL: https://ywovuuomfblorpdwbyks.supabase.co
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/send_newsletter.py --auto
