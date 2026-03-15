@@ -35,7 +35,11 @@ DELAY_MAX     = 8
 BATCH_SIZE    = 100
 # ──────────────────────────────────────────────────────────────
 
-TODAY = date.today().isoformat()
+
+from datetime import timezone, timedelta
+EST = timezone(timedelta(hours=-5))
+TODAY = datetime.now(EST).strftime('%Y-%m-%d')
+
 
 ZODIAC_ORDER = [
     'Aries','Taurus','Gemini','Cancer','Leo','Virgo',
