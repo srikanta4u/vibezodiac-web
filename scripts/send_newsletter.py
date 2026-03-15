@@ -78,16 +78,16 @@ def fetch_horoscopes():
     )
 
 
+
 def fetch_subscribers():
     endpoint = (
         "newsletter_subscribers"
-        "?is_active=eq.true"
-        "&select=email,unsubscribe_token"
+        "?select=email,unsubscribe_token,is_active"
         "&order=subscribed_at.asc"
     )
-    return supabase_get(endpoint)
-
-
+    data = supabase_get(endpoint)
+    return [s for s in data if s.get('is_active') == True]
+    
 # ─── EMAIL ────────────────────────────────────────────────────
 
 def get_email_subject():
