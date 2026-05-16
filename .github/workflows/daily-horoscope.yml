@@ -25,7 +25,7 @@ jobs:
           node-version: '22'
 
       - name: Install Node dependencies
-        run: npm install @supabase/supabase-js
+        run: npm ci
 
       - name: Generate daily horoscopes
         env:
