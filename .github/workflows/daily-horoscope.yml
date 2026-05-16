@@ -27,7 +27,7 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-- name: Generate daily horoscopes
+      - name: Generate daily horoscopes
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
