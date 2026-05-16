@@ -27,7 +27,7 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Generate daily horoscopes
+- name: Generate daily horoscopes
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
@@ -38,6 +38,10 @@ jobs:
             -d '{"source":"github-actions"}')
           echo "Horoscope status: $HTTP_STATUS"
           cat response.txt
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "Horoscope generation failed with status $HTTP_STATUS"
+            exit 1
+          fi
 
       - name: Wait for horoscopes to save
         run: sleep 45
