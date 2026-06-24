@@ -2,7 +2,7 @@ name: Daily Horoscope + Newsletter
 
 on:
   schedule:
-    - cron: '0 11 * * *'
+    - cron: '0 06 * * *'
     - cron: '0 14 * * *'   # Backup: 10 AM EDT if primary was skipped
   workflow_dispatch:
 
